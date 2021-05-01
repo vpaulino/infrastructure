@@ -1,0 +1,20 @@
+﻿<Project>
+
+	<PropertyGroup>
+		<TargetFrameworks>net462;netcoreapp3.0</TargetFrameworks>
+		<LangVersion>7.2</LangVersion>
+		<IsPackable>false</IsPackable>
+<DebugType>full</DebugType>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="coverlet.msbuild" Version="2.6.2" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.0" />
+		<PackageReference Include="Moq" Version="4.8.2" />
+		<PackageReference Include="xunit" Version="2.3.1" />
+		<PackageReference Include="xunit.analyzers" Version="0.8.0" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+	</ItemGroup>
+	
+
+</Project>

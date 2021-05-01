@@ -1,0 +1,48 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- task: NuGetToolInstaller@1
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+  
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    configuration: '$(buildConfiguration)'
+    
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: '**/tests/**/*.Tests.csproj'
+    configuration: $(buildConfiguration)
+    arguments: '--filter Category=Unit /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
+    testRunTitle: 'Unit Tests'
+
+- task: DotNetCoreCLI@2
+  displayName: "dotnet pack"
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/src/**/**.csproj'
+    packDirectory: '$(Build.ArtifactStagingDirectory)/nugets/release'
+    versioningScheme: 'off'
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'publish coverage results'
+  inputs:
+    codeCoverageTool: 'cobertura'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.cobertura.xml'

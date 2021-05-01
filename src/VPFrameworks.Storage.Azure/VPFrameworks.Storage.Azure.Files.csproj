@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <PackageId>VPFrameworks.Storage.Azure.Files</PackageId>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <Authors>vitor paulino</Authors>
+    <Description>This package nuget contains The Storage API implementation to File Share</Description>
+    <IsPackable>true</IsPackable>
+
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Storage.File" Version="11.1.3" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VPFrameworks.Storage.Abstractions\VPFrameworks.Storage.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

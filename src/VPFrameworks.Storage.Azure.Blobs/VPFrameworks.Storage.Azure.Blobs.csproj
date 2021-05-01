@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+
+
+  <PropertyGroup>
+    <PackageId>VPFrameworks.Storage.Azure.Blobs</PackageId>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <Authors>vitor paulino</Authors>
+    <Description>This package nuget contains The Storage API implementation to Blobs</Description>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  
+
+  <ItemGroup>
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VPFrameworks.Storage.Abstractions\VPFrameworks.Storage.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

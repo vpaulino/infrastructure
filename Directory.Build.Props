@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <LangVersion>7.1</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.SourceLink.AzureRepos.Git" Version="1.1.0-beta-20204-02" IncludeAssets="All" />
+  </ItemGroup>
+</Project>

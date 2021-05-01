@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>vitor paulino</Authors>
+    <Company>private</Company>
+    <Product>VPFrameworks</Product>
+    <Description>this contains a set of abstractions to enable serialization mechanism</Description>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <PackageId>VPFrameworks.Serialization.Abstractions</PackageId>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <Authors>vitor paulino</Authors>
+    <Description>This package nuget contains The serialization API definition</Description>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+  
+
+</Project>

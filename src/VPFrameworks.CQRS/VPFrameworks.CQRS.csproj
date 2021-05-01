@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Company>private</Company>
+    <Product>VPFrameworks</Product>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>VPFrameworks.CQRS</PackageId>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <Authors>vitor paulino</Authors>
+    <Description>This package nuget contains a lightweight CQRS framework definition with the main concepts</Description>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+
+</Project>
