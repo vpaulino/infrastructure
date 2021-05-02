@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
-namespace VPFrameworks.Http.Abstractions
+namespace InfrastrutureClients.Http.Abstractions
 {
     /// <summary>
     /// List the core methods to enable Http comunications

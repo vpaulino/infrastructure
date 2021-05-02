@@ -1,12 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Company>private</Company>
-    <Product>VPFrameworks</Product>
-  </PropertyGroup>
-
+ 
   <PropertyGroup>
     <PackageId>VPFrameworks.CQRS</PackageId>
     <VersionPrefix>0.1.0</VersionPrefix>

@@ -1,4 +1,4 @@
-﻿namespace VPFrameworks.Http.Abstractions
+﻿namespace InfrastrutureClients.Http.Abstractions
 {
     /// <summary>
     /// Represents the data needed to send authorization information

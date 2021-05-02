@@ -1,14 +1,14 @@
-﻿using Microsoft.Azure.ServiceBus;
+﻿using InfrastrutureClients.Messaging.Abstractions;
+using InfrastrutureClients.Messaging.Abstractions.Subscriber;
+using InfrastrutureClients.Serialization.Abstractions;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using VPFrameworks.Messaging.Abstractions;
-using VPFrameworks.Messaging.Abstractions.Subscriber;
-using VPFrameworks.Serialization.Abstractions;
 
-namespace VPFrameworks.Messaging.Azure.ServiceBus
+namespace InfrastrutureClients.Messaging.Azure.ServiceBus
 {
     /*
     
@@ -93,7 +93,7 @@ Alternatively, persist message information so that your processing doesn't have 
             {
                 // Maximum number of concurrent calls to the callback ProcessMessagesAsync(), set to 1 for simplicity.
                 // Set it according to how many messages the application wants to process in parallel.
-                MaxConcurrentCalls = options.ConcurrentCalls,
+                MaxConcurrentCalls = options.ConcurrentCalls.HasValue ? options.ConcurrentCalls.Value : 1,
                 MaxAutoRenewDuration = options.MaximumExecutionTime.Value,
                 // Indicates whether the message pump should automatically complete the messages after returning from user callback.
                 // False below indicates the complete operation is handled by the user callback as in ProcessMessagesAsync().

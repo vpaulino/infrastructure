@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VPFrameworks.Messaging.RabbitMQ.Serialization
+namespace InfrastrutureClients.Messaging.RabbitMQ.Serialization
 {
     /// <summary>
     /// Media types supported by the SDK

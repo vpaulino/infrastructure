@@ -9,7 +9,7 @@ using Xunit;
 
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
-namespace VPFrameworks.Cqrs.Tests
+namespace InfrastrutureClients.Cqrs.Tests
 {
     public class CommandDispatcherTests
     {

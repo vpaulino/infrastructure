@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VPFrameworks.Serialization.Abstractions
+namespace InfrastrutureClients.Serialization.Abstractions
 {
 
     /// <summary>

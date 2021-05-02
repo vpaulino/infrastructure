@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VPFrameworks.Storage.Azure.Files.Extensions;
 
-namespace VPFrameworks.Storage.Azure.Files
+namespace InfrastrutureClients.Storage.Azure.Files
 {
     /// <summary>
     /// Provider to Azure File Storage

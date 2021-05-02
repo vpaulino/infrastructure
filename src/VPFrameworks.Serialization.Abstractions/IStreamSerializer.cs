@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VPFrameworks.Serialization.Abstractions
+namespace InfrastrutureClients.Serialization.Abstractions
 {
     /// <summary>
     /// Contract to serializer and deserialze data to and from some Stream

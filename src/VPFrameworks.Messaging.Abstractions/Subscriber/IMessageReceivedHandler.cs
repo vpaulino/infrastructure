@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VPFrameworks.Messaging.Abstractions.Subscriber
+namespace InfrastrutureClients.Messaging.Abstractions.Subscriber
 {
 
     /// <summary>

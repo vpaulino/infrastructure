@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using RabbitMQ.Client;
 
-namespace VPFrameworks.Messaging.RabbitMQ.Serialization
+namespace InfrastrutureClients.Messaging.RabbitMQ.Serialization
 {
     /// <summary>
     /// 

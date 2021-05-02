@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Text;
 using VPFrameworks.Persistence.Abstractions;
 
-namespace VPFrameworks.Persistence.MongoDb
+namespace InfrastrutureClients.Persistence.MongoDb
 {
     /// <summary>
     /// 

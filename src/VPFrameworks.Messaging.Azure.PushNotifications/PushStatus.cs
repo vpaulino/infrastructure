@@ -1,7 +1,7 @@
 ﻿using Microsoft.Azure.NotificationHubs;
 using System;
 
-namespace VPFrameworks.Messaging.Azure.PushNotifications
+namespace InfrastrutureClients.Messaging.Azure.PushNotifications
 {
     /// <summary>
     /// 

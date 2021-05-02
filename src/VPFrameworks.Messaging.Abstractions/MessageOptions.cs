@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VPFrameworks.Messaging.Abstractions
+namespace InfrastrutureClients.Messaging.Abstractions
 {
     /// <summary>
     /// Represents all the options that are possible to configure in a broker operation relevant to messages process
@@ -70,7 +70,7 @@ namespace VPFrameworks.Messaging.Abstractions
         /// <summary>
         /// Gets the Number of messages that can be processed in simultaneous
         /// </summary>
-        public int ConcurrentCalls { get; }
+        public int? ConcurrentCalls { get; }
         
     }
 }

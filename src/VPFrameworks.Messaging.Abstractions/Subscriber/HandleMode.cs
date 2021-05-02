@@ -1,4 +1,4 @@
-﻿namespace VPFrameworks.Messaging.Abstractions.Subscriber
+﻿namespace InfrastrutureClients.Messaging.Abstractions.Subscriber
 {
     /// <summary>
     /// Type of handling that messages handler  execute

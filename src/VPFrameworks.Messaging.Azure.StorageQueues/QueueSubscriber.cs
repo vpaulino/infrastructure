@@ -1,15 +1,15 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Queue;
+﻿using Azure.Storage.Queues;
+using Azure.Storage.Queues.Models;
+using InfrastrutureClients.Messaging.Abstractions;
+using InfrastrutureClients.Messaging.Abstractions.Subscriber;
+using InfrastrutureClients.Serialization.Abstractions;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using VPFrameworks.Messaging.Abstractions;
-using VPFrameworks.Messaging.Abstractions.Subscriber;
-using VPFrameworks.Serialization.Abstractions;
 
-namespace VPFrameworks.Azure.Storage.Queues
+namespace InfrastrutureClients.Storage.Queues.Azure
 {
     /// <summary>
     /// 
@@ -19,8 +19,8 @@ namespace VPFrameworks.Azure.Storage.Queues
     {
         private ITextSerializer textSerializer;
         private ConnectionSettings subscriberSettings;
-        private CloudQueueClient cloudClient;
-        private CloudQueue cloudQueue;
+        private QueueClient queueClient;
+        
 
         private IMessageReceivedHandler<T> clientMessageHandler;
         private Task SubscriptionHandler;
@@ -44,16 +44,15 @@ namespace VPFrameworks.Azure.Storage.Queues
             this.serializationSettings = serializationSettings;
             this.textSerializer = textSerializer;
             this.subscriberSettings = subscriberSettings;
-            var storageAccount = CloudStorageAccount.Parse(subscriberSettings.ConnectionString);
-            cloudClient = storageAccount.CreateCloudQueueClient();
 
-            if (string.IsNullOrEmpty(subscriberSettings.Path)) 
+            if (string.IsNullOrEmpty(subscriberSettings.Path))
             {
                 throw new ArgumentNullException(nameof(subscriberSettings.Path));
             }
 
-            cloudQueue = cloudClient.GetQueueReference(subscriberSettings.Path);
-            
+
+            queueClient = new(subscriberSettings.ConnectionString, subscriberSettings.Path);
+
         }
         /// <summary>
         /// 
@@ -89,7 +88,7 @@ namespace VPFrameworks.Azure.Storage.Queues
         /// <returns></returns>
         public async Task SuccessAckAsync(MessageReceived<T> message, CancellationToken token = default)
         {
-            await this.cloudQueue.DeleteMessageAsync(message.MessageId, message.PopReceipt);
+            await this.queueClient.DeleteMessageAsync(message.MessageId, message.PopReceipt);
         }
 
 
@@ -103,11 +102,11 @@ namespace VPFrameworks.Azure.Storage.Queues
         /// <returns></returns>
         public virtual async Task<Subscription> SubscribeAsync(IMessageReceivedHandler<T> messageHandler, MessageOptions options, CancellationToken token)
         {
-            await this.cloudQueue.CreateIfNotExistsAsync();
+            await this.queueClient.CreateIfNotExistsAsync();
             var groupedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, this.ctSource.Token);
             this.options = options;
             this.clientMessageHandler = messageHandler;
-            SubscriptionHandler = Task.Run( async ()=> await GetMessages(groupedCancellationTokenSource.Token), groupedCancellationTokenSource.Token);
+            this.SubscriptionHandler = Task.Run( async ()=> await GetMessages(groupedCancellationTokenSource.Token), groupedCancellationTokenSource.Token);
 
             this.subscriptionId = Guid.NewGuid();
             
@@ -123,37 +122,33 @@ namespace VPFrameworks.Azure.Storage.Queues
         /// <returns></returns>
         protected virtual async Task GetMessages(CancellationToken token)
         {
-            var queueRequestOptions = new QueueRequestOptions() { ServerTimeout = options.ServerTimeout, MaximumExecutionTime = options.MaximumExecutionTime };
-            var operationContext = new OperationContext() { ClientRequestID = options.ClientId, CustomUserAgent = options.CustomUserAgent, UserHeaders = options.UserHeaders };
-            while (!token.IsCancellationRequested && await this.cloudQueue.ExistsAsync(queueRequestOptions, operationContext, token)) 
+            while (!token.IsCancellationRequested && await this.queueClient.ExistsAsync(token)) 
             {
                 try
                 {
-                    var messagesReceived = await this.cloudQueue.GetMessagesAsync(options.ConcurrentCalls, options.InitialVisibilityDelay, queueRequestOptions, operationContext, token);
+                    var queueResponse = await this.queueClient.ReceiveMessagesAsync(options.ConcurrentCalls, options.InitialVisibilityDelay, token);
 
-                    if (messagesReceived == null)
+                    if (queueResponse.Value == null)
                         continue;
 
-                    await ProcessMessages(messagesReceived, token);
+                    await ProcessMessages(queueResponse.Value, token);
                 }
                 catch (OperationCanceledException ex)
                 {
                     this.logger.LogError($"Message Received from {this.subscriberSettings.Path} with subscription id {this.subscriptionId} thrown Exception: {ex}");
-                    await this.cloudQueue.DeleteAsync();
                 }
             }
         }
 
-        private async Task ProcessMessages(IEnumerable<CloudQueueMessage> messagesReceived, CancellationToken token)
+        private async Task ProcessMessages(IEnumerable<QueueMessage> messagesReceived, CancellationToken token)
         {
             foreach (var messageReceived in messagesReceived)
             {
-                string messageBody = messageReceived.AsString;
-                T body = await this.textSerializer.Deserialize<T>(messageBody, serializationSettings);
-                var handlingResult = await this.clientMessageHandler.HandleAsync(new MessageReceived<T>(messageReceived.Id, messageReceived.PopReceipt, null, body), token);
+                BinaryData messageBody = messageReceived.Body;
+                T body = messageBody.ToObjectFromJson<T>();
+                var handlingResult = await this.clientMessageHandler.HandleAsync(new MessageReceived<T>(messageReceived.MessageId, messageReceived.PopReceipt, null, body), token);
                 if (handlingResult.Mode == HandleMode.Sync && handlingResult.Success)
-                    await this.cloudQueue.DeleteMessageAsync(messageReceived);
-
+                    await this.queueClient.DeleteMessageAsync(messageReceived.MessageId, messageReceived.PopReceipt);
             }
         }
     }

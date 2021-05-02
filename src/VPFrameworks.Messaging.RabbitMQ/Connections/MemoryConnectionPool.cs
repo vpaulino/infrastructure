@@ -8,7 +8,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using VPFrameworks.Messaging.RabbitMQ.Connections;
 
-namespace VPFrameworks.Messaging.RabbitMQ.Connections
+namespace InfrastrutureClients.Messaging.RabbitMQ.Connections
 {
 
     /// <summary>

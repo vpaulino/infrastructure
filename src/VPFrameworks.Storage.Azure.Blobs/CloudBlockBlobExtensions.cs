@@ -1,10 +1,7 @@
 ﻿using Azure.Storage.Abstractions.Blobs;
-using Microsoft.WindowsAzure.Storage.Blob;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Azure.Storage.Blobs;
 
-namespace VPFrameworks.Storage.Azure.Blobs
+namespace InfrastrutureClients.Storage.Azure.Blobs
 {
     /// <summary>
     /// Extensions do azure blob 
@@ -16,9 +13,10 @@ namespace VPFrameworks.Storage.Azure.Blobs
         /// </summary>
         /// <param name="blob"></param>
         /// <returns></returns>
-        public static BlobDescriptionDetails ConvertToBlobDescriptionDetails(this ICloudBlob blob)
+        public static BlobDescriptionDetails ConvertToBlobDescriptionDetails(this BlobClient blob)
         {
-           return new BlobDescriptionDetails(blob.Uri, blob.Container.Name, false, blob.Properties.ContentType, blob.Properties.ContentLanguage, blob.Properties.Created, blob.Properties.ETag, blob.Properties.LastModified, blob.Properties.Length, blob.Properties.LeaseStatus.ToString(), blob.Properties.LeaseState.ToString(), blob.Properties.LeaseDuration.ToString());
+            var blobProperties = blob.GetProperties().Value;
+           return new BlobDescriptionDetails(blob.Uri, blob.BlobContainerName, false, blobProperties.ContentType, blobProperties.ContentLanguage, blobProperties.CreatedOn, blobProperties.ETag.ToString(), blobProperties.LastModified, blobProperties.ContentLength, blobProperties.LeaseStatus.ToString(), blobProperties.LeaseState.ToString(), blobProperties.LeaseDuration.ToString());
         }
     }
 }

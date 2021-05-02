@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VPFrameworks.Persistence.Abstractions
+namespace InfrastrutureClients.Persistence.Abstractions
 {
     /// <summary>
     /// Represents an instance of an entity that is stored in the repository

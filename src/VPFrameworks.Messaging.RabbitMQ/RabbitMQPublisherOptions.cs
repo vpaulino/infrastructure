@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using VPFrameworks.Messaging.Abstractions;
 
-namespace VPFrameworks.Messaging.RabbitMQ
+namespace InfrastrutureClients.Messaging.RabbitMQ
 {
     /// <summary>
     /// Information that describes the message to be sent

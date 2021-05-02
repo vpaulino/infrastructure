@@ -1,7 +1,7 @@
 ﻿using System.Security.Principal;
 using System.Threading.Tasks;
 
-namespace VPFrameworks.Http.Abstractions
+namespace InfrastrutureClients.Http.Abstractions
 {
     /// <summary>
     /// Authenticator contract

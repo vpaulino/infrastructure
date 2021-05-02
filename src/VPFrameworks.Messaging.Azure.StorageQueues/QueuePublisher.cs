@@ -1,13 +1,13 @@
-﻿using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Queue;
-using VPFrameworks.Messaging.Abstractions;
-using VPFrameworks.Serialization.Abstractions;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using VPFrameworks.Messaging.Abstractions.Publisher;
+using InfrastrutureClients.Messaging.Abstractions.Publisher;
+using InfrastrutureClients.Serialization.Abstractions;
+using InfrastrutureClients.Messaging.Abstractions;
+using Azure.Storage.Queues;
+using Azure.Core;
 
-namespace VPFrameworks.Azure.Storage.Queues
+namespace InfrastrutureClients.Storage.Queues.Azure
 {
     /// <summary>
     /// Crreates an instance of QueuePublisher
@@ -16,12 +16,8 @@ namespace VPFrameworks.Azure.Storage.Queues
     {
         private ITextSerializer textSerializer;
         private ConnectionSettings publisherSettings;
-        private LogLevel logLevel;
-        private CloudQueueClient cloudClient;
-        private CloudQueue cloudQueue;
+        private QueueClient queueClient;
         private MessageOptions messageOptions;
-        private QueueRequestOptions queueRequestOptions;
-        private OperationContext operationContext;
         private SerializationSettings serializationSettings;
 
         /// <summary>
@@ -30,81 +26,40 @@ namespace VPFrameworks.Azure.Storage.Queues
         /// <param name="textSerializer"></param>
         /// <param name="publisherSettings"></param>
         /// <param name="serializationSettings"></param>
-        /// <param name="logLevel"></param>
-        public QueuePublisher(ITextSerializer textSerializer, ConnectionSettings publisherSettings, SerializationSettings serializationSettings, LogLevel logLevel = LogLevel.Error)
+        public QueuePublisher(ITextSerializer textSerializer, ConnectionSettings publisherSettings, SerializationSettings serializationSettings)
         {
+            
             this.textSerializer = textSerializer;
             this.publisherSettings = publisherSettings;
-            this.logLevel = logLevel;
             this.serializationSettings = serializationSettings;
-
-            var storageAccount = CloudStorageAccount.Parse(publisherSettings.ConnectionString);
-            cloudClient = storageAccount.CreateCloudQueueClient();
 
             if (string.IsNullOrEmpty(publisherSettings.Path))
             {
                 throw new ArgumentNullException(nameof(publisherSettings.Path));
             }
 
-            cloudQueue = cloudClient.GetQueueReference(publisherSettings.Path);
-         
+            queueClient = new(publisherSettings.ConnectionString, publisherSettings.Path);
 
         }
 
         ///
-        public QueuePublisher(ITextSerializer textSerializer, MessageOptions messageOptions, ConnectionSettings publisherSettings, SerializationSettings serializationSettings, LogLevel logLevel = LogLevel.Error) 
-            : this(textSerializer, publisherSettings, serializationSettings, logLevel)
+        public QueuePublisher(ITextSerializer textSerializer, MessageOptions messageOptions, ConnectionSettings publisherSettings, SerializationSettings serializationSettings) 
+            : this(textSerializer, publisherSettings, serializationSettings)
         {
-           
-            this.messageOptions = messageOptions;
-            queueRequestOptions = new QueueRequestOptions() { MaximumExecutionTime = messageOptions.MaximumExecutionTime, ServerTimeout = messageOptions.ServerTimeout };
-            operationContext = new OperationContext() { ClientRequestID = messageOptions.ClientId, CustomUserAgent = messageOptions.CustomUserAgent, UserHeaders = messageOptions.UserHeaders, LogLevel = logLevel };
-        }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="payload"></param>
-        /// <param name="path"></param>
-        /// <param name="options"></param>
-        /// <param name="queueRequestOptions"></param>
-        /// <param name="operationContext"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        protected virtual async Task<PublishResult> PublishAsync<T>(T payload, string path, MessageOptions options, QueueRequestOptions queueRequestOptions, OperationContext operationContext, CancellationToken token)
-        {
-            if (payload == null)
-                throw new ArgumentNullException(nameof(payload));
-
-            var message = await CreateCloudMessage(payload);
-           
-
-            CloudQueue scopedQueue = this.cloudQueue;
-            if (!string.IsNullOrEmpty(path))
-            {
-                scopedQueue = cloudClient.GetQueueReference(path);
-            }
-
-            await scopedQueue.CreateIfNotExistsAsync();
-
-            await scopedQueue.AddMessageAsync(message, options.TimeToLive, options.InitialVisibilityDelay, queueRequestOptions, operationContext, token);
-                        
-            return new PublishResult(message.Id, message.ExpirationTime, message.InsertionTime, message.PopReceipt);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="payload"></param>
-        /// <returns></returns>
-        protected virtual async Task<CloudQueueMessage> CreateCloudMessage<T>(T payload)
-        {
-            string payloadSerialized = await this.textSerializer.Serialize<T>(payload, serializationSettings);
-            var message = new CloudQueueMessage(payloadSerialized);
-
-            return message;
+            QueueClientOptions options = new QueueClientOptions();
+            options.Retry.Delay = new TimeSpan(0, 1, 0);
+            options.Retry.MaxRetries = 3;
+            options.Retry.Mode = RetryMode.Exponential;
+            options.Diagnostics.ApplicationId = "useragent-id";
+            options.Diagnostics.IsLoggingEnabled = true;
+            options.Diagnostics.IsDistributedTracingEnabled = true;
+            options.Diagnostics.IsLoggingContentEnabled = false;
+            options.MessageEncoding = QueueMessageEncoding.Base64;
+            
+            //this.messageOptions = messageOptions;
+            //queueRequestOptions = new QueueRequestOptions() { MaximumExecutionTime = messageOptions.MaximumExecutionTime, ServerTimeout = messageOptions.ServerTimeout };
+            //operationContext = new OperationContext() { ClientRequestID = messageOptions.ClientId, CustomUserAgent = messageOptions.CustomUserAgent, UserHeaders = messageOptions.UserHeaders, LogLevel = logLevel };
         }
 
         /// <summary>
@@ -118,13 +73,32 @@ namespace VPFrameworks.Azure.Storage.Queues
         /// <returns></returns>
         public async Task<PublishResult> PublishAsync<T>(T payload, string path, MessageOptions options, CancellationToken token)
         {
+            if (payload == null)
+                throw new ArgumentNullException(nameof(payload));
 
-            var queueRequestOptions = new QueueRequestOptions() { MaximumExecutionTime = options.MaximumExecutionTime, ServerTimeout = options.ServerTimeout };
-            var operationContext = new OperationContext() { ClientRequestID = options.ClientId, CustomUserAgent = options.CustomUserAgent, UserHeaders = options.UserHeaders, LogLevel = logLevel };
+            var message = await CreateCloudMessage(payload);
+           
+            await queueClient.CreateIfNotExistsAsync();
 
-            return await PublishAsync(payload, path, options, queueRequestOptions, operationContext, token);
-
+            var response = await queueClient.SendMessageAsync(message, options.InitialVisibilityDelay, options.TimeToLive, token);
+                        
+            return new PublishResult(response.Value.MessageId, response.Value.ExpirationTime, response.Value.InsertionTime, response.Value.PopReceipt);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="payload"></param>
+        /// <returns></returns>
+        protected virtual async ValueTask<string> CreateCloudMessage<T>(T payload)
+        {
+            string payloadSerialized = await this.textSerializer.Serialize<T>(payload, serializationSettings);
+            
+            return payloadSerialized;
+        }
+
+        
 
 
 

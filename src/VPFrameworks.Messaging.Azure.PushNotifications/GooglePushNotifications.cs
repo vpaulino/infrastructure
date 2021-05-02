@@ -2,11 +2,9 @@
 using System;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using VPFrameworks.Messaging.Abstractions;
-using VPFrameworks.Serialization.Abstractions;
+using System.Threading.Tasks; 
 
-namespace VPFrameworks.Messaging.Azure.PushNotifications
+namespace InfrastrutureClients.Messaging.Azure.PushNotifications
 {
     /// <summary>
     /// 

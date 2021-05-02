@@ -1,4 +1,4 @@
-﻿namespace VPFrameworks.Messaging.Abstractions
+﻿namespace InfrastrutureClients.Messaging.Abstractions
 {
     /// <summary>
     /// Concrete implementations support session information when exchanging messages. 

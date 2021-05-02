@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using VPFrameworks.Persistence.Abstractions;
 
-namespace VPFrameworks.Persistence.EntityFramework
+namespace InfrastrutureClients.Persistence.EntityFramework
 {
     /// <summary>
     /// 

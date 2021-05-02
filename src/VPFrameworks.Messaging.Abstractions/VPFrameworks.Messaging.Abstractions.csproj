@@ -1,9 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-
+ 
   <PropertyGroup>
     <PackageId>VPFrameworks.Messaging.Abstractions</PackageId>
     <VersionPrefix>0.1.0</VersionPrefix>

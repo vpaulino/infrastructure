@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VPFrameworks.Messaging.Abstractions.Subscriber
+namespace InfrastrutureClients.Messaging.Abstractions.Subscriber
 {
     /// <summary>
     /// Message Received details

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VPFrameworks.Http.Abstractions
+namespace InfrastrutureClients.Http.Abstractions
 {
     /// <summary>
     /// 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VPFrameworks.Messaging.Abstractions
+namespace InfrastrutureClients.Messaging.Abstractions
 {
     /// <summary>
     /// Gets a connection string needed info 

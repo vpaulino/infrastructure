@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Azure.Storage.Abstractions;
 using Azure.Storage.Abstractions.Blobs;
 
-namespace VPFrameworks.Storage.Abstractions
+namespace InfrastrutureClients.Storage.Abstractions
 {
     /// <summary>
     /// API to provide comunication to a Blob Storage

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VPFrameworks.Persistence.Abstractions
+namespace InfrastrutureClients.Persistence.Abstractions
 {
     /// <summary>
     /// When there is a conflict cause by some entity when accessing in the database this exception should be thrown 

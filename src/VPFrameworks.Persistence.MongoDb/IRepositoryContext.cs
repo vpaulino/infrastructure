@@ -1,6 +1,6 @@
 ﻿using MongoDB.Driver;
 
-namespace VPFrameworks.Persistence.MongoDb
+namespace InfrastrutureClients.Persistence.MongoDb
 {
     /// <summary>
     /// 

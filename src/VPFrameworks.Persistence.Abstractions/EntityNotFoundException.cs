@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VPFrameworks.Persistence.Abstractions
+namespace InfrastrutureClients.Persistence.Abstractions
 {
     /// <summary>
     ///  If some entity was expected to exist but its not there 

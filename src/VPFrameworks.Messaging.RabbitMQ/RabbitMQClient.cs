@@ -8,7 +8,7 @@ using RabbitMQ.Client;
 using VPFrameworks.Messaging.RabbitMQ.Connections;
 using VPFrameworks.Messaging.RabbitMQ.Serialization;
 
-namespace VPFrameworks.Messaging.RabbitMQ
+namespace InfrastrutureClients.Messaging.RabbitMQ
 {
     /// <summary>
     /// Base type to diferent comunication patterns with RabbitMQ server

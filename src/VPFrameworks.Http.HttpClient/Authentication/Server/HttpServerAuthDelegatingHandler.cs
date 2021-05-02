@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VPFrameworks.Http.Abstractions
+namespace InfrastrutureClients.Http.Abstractions
 {
     /// <summary>
     /// Provides a delegate handler that supports authentication on the Server Side

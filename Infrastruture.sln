@@ -51,6 +51,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VPFrameworks.Messaging.Azur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VPFrameworks.Persistence.Abstractions", "src\VPFrameworks.Persistence.Abstractions\VPFrameworks.Persistence.Abstractions.csproj", "{12BEFFB7-60F1-4A97-8EC0-A5A14C977AB9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{C161C1C8-9C32-40E9-8764-D1039F5CAC5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureStorageSample", "samples\AzureStorageSample\AzureStorageSample.csproj", "{EAA67231-512F-41E3-B761-46F4830FE0E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +133,10 @@ Global
 		{12BEFFB7-60F1-4A97-8EC0-A5A14C977AB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12BEFFB7-60F1-4A97-8EC0-A5A14C977AB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12BEFFB7-60F1-4A97-8EC0-A5A14C977AB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAA67231-512F-41E3-B761-46F4830FE0E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAA67231-512F-41E3-B761-46F4830FE0E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAA67231-512F-41E3-B761-46F4830FE0E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAA67231-512F-41E3-B761-46F4830FE0E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -152,6 +160,7 @@ Global
 		{78E4693F-15F7-4C1B-9307-865BCCA128D4} = {E1572CFF-2F31-496F-B1FC-B6157A70045A}
 		{74BE4B8A-8025-4D9D-8317-F6B83F6B6C61} = {E1572CFF-2F31-496F-B1FC-B6157A70045A}
 		{12BEFFB7-60F1-4A97-8EC0-A5A14C977AB9} = {E1572CFF-2F31-496F-B1FC-B6157A70045A}
+		{EAA67231-512F-41E3-B761-46F4830FE0E6} = {C161C1C8-9C32-40E9-8764-D1039F5CAC5C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5198935C-A639-408B-BFE1-74B6BB704DDE}

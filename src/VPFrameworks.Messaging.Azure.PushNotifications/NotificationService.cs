@@ -1,12 +1,12 @@
-﻿using Microsoft.Azure.NotificationHubs;
+﻿using InfrastrutureClients.Messaging.Abstractions;
+using InfrastrutureClients.Serialization.Abstractions;
+using Microsoft.Azure.NotificationHubs;
 using System;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using VPFrameworks.Messaging.Abstractions;
-using VPFrameworks.Serialization.Abstractions;
+using System.Threading.Tasks; 
 
-namespace VPFrameworks.Messaging.Azure.PushNotifications
+namespace InfrastrutureClients.Messaging.Azure.PushNotifications
 {
     /// <summary>
     /// 

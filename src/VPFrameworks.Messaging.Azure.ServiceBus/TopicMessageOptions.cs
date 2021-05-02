@@ -1,9 +1,9 @@
-﻿using System;
+﻿using InfrastrutureClients.Messaging.Abstractions;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using VPFrameworks.Messaging.Abstractions;
+using System.Text; 
 
-namespace VPFrameworks.Messaging.Azure.ServiceBus.Topics
+namespace InfrastrutureClients.Messaging.Azure.ServiceBus.Topics
 {
     /// <summary>
     /// 

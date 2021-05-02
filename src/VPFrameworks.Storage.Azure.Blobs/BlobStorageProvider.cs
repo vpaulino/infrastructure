@@ -1,7 +1,5 @@
 ﻿using Azure.Storage.Abstractions;
 using Azure.Storage.Abstractions.Blobs;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,22 +7,20 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VPFrameworks.Storage.Abstractions;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure;
 
-namespace VPFrameworks.Storage.Azure.Blobs
+namespace InfrastrutureClients.Storage.Azure.Blobs
 {
     /// <summary>
     ///  Azure Blob Storage provider
     /// </summary>
     public class BlobStorageProvider : StorageProvider, IBlobStorageProvider
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        protected virtual CloudStorageAccount GetCloudStorageAccount()
-        {
-            return CloudStorageAccount.Parse(this.settings.ConnectionString);
-        }
+
+        private BlobServiceClient blobServiceClient;
+        
 
         /// <summary>
         /// 
@@ -32,34 +28,21 @@ namespace VPFrameworks.Storage.Azure.Blobs
         /// <param name="settings"></param>
         public BlobStorageProvider(StorageSettings settings) : base(settings)
         {
-            
+            this.blobServiceClient = new(settings.ConnectionString);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="location"></param>
-        /// <param name="blobClient"></param>
         /// <returns></returns>
-        protected virtual async Task<CloudBlobContainer> GetOrCreateContainer(string location, CloudBlobClient blobClient)
+        protected virtual async Task<BlobContainerClient> GetOrCreateContainer(string location)
         {
-            CloudBlobContainer container = blobClient.GetContainerReference(location);
-            await container.CreateIfNotExistsAsync();
-            return container;
+            var blobContainerclient = blobServiceClient.GetBlobContainerClient(location);
+            await blobContainerclient.CreateIfNotExistsAsync();
+            return blobContainerclient;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="location"></param>
-        /// <param name="storageAccount"></param>
-        /// <returns></returns>
-        protected virtual CloudBlobContainer GetBlobContainer(string location, CloudStorageAccount storageAccount)
-        {
-            
-            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-            return blobClient.GetContainerReference(location);
-        }
+         
 
         /// <summary>
         /// Lists all containers that exists on the account
@@ -68,19 +51,15 @@ namespace VPFrameworks.Storage.Azure.Blobs
         /// <returns></returns>
         public virtual async Task<ListResult<ContainerItem>> ListContainers(CancellationToken ct)
         {
-            CloudStorageAccount storageAccount = GetCloudStorageAccount();
-            var client = storageAccount.CreateCloudBlobClient();
-            BlobContinuationToken blobContinuationToken = null;
-            List<CloudBlobContainer> cloudBlobContainers = new List<CloudBlobContainer>();
-
-            do
-            {
-                var result = await client.ListContainersSegmentedAsync(blobContinuationToken);
-                blobContinuationToken = result.ContinuationToken;
-                cloudBlobContainers.AddRange(result.Results);
-            } while (blobContinuationToken != null);
             
-            return new ListResult<ContainerItem>(cloudBlobContainers.Select((container) => new ContainerItem(container.Uri, container.Name)));
+            var blobContainerItems =  this.blobServiceClient.GetBlobContainersAsync(cancellationToken:ct);
+            var containerItems  = new ListResult<ContainerItem>();
+            await foreach (BlobContainerItem item in blobContainerItems) 
+            {                
+                containerItems.Add(new ContainerItem(new Uri($"{this.blobServiceClient.Uri.AbsoluteUri}/{item.Name}"), item.Name));
+            }
+
+            return containerItems;
         }
 
         /// <summary>
@@ -92,21 +71,22 @@ namespace VPFrameworks.Storage.Azure.Blobs
         /// <param name="ct">operation cancellation token</param>
         /// <returns></returns>
         public virtual async Task RenameBlob(string location, string currentFileName, string newFileName, CancellationToken ct)
-        {
-            CloudStorageAccount storageAccount = GetCloudStorageAccount();
-            CloudBlobContainer container = GetBlobContainer(location, storageAccount);
-            CloudBlockBlob blobCopy = container.GetBlockBlobReference(newFileName);
+        {   
+            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(location);
+            var existingblob = containerClient.GetBlobClient(currentFileName);
+            if (!await containerClient.ExistsAsync())
+                throw new InvalidOperationException($"Container  {location} not found");
 
-            if (!await blobCopy.ExistsAsync())
-            {
-                
-                CloudBlockBlob blob = container.GetBlockBlobReference(currentFileName);
-                if (await blob.ExistsAsync())
-                {
-                    await blobCopy.StartCopyAsync(blob);
-                    await blob.DeleteIfExistsAsync();
-                }
-            }
+            if(! await existingblob.ExistsAsync())
+                throw new InvalidOperationException($"blob {location}/{currentFileName} not found");
+
+
+            BlobClient blobClient = containerClient.GetBlobClient(newFileName);
+            var operation = await blobClient.StartCopyFromUriAsync(containerClient.GetBlobClient(currentFileName).Uri, new BlobCopyFromUriOptions(), ct);
+
+            await operation.WaitForCompletionAsync(ct);
+            await existingblob.DeleteAsync(cancellationToken: ct);
+
         }
 
         /// <summary>
@@ -119,22 +99,22 @@ namespace VPFrameworks.Storage.Azure.Blobs
         /// <returns></returns>
         public virtual async Task MoveBlob(string currentlocation, string newLocation, string fileName, CancellationToken ct)
         {
-            CloudStorageAccount storageAccount = GetCloudStorageAccount();
-            CloudBlobContainer container = GetBlobContainer(currentlocation, storageAccount);
-            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-            CloudBlobContainer newContainer = await GetOrCreateContainer(newLocation, blobClient);
-            CloudBlockBlob blobCopy = newContainer.GetBlockBlobReference(fileName);
+            BlobContainerClient currentContainerClient = this.blobServiceClient.GetBlobContainerClient(currentlocation);
+            BlobContainerClient newContainerClient = this.blobServiceClient.GetBlobContainerClient(newLocation);
 
-            if (!await blobCopy.ExistsAsync())
-            {
-                CloudBlockBlob blob = container.GetBlockBlobReference(fileName);
+            var existingblob = currentContainerClient.GetBlobClient(fileName);
+            if (!await currentContainerClient.ExistsAsync())
+                throw new InvalidOperationException($"Container  {currentlocation} not found");
 
-                if (await blob.ExistsAsync())
-                {
-                    await blobCopy.StartCopyAsync(blob);
-                    await blob.DeleteIfExistsAsync();
-                }
-            }
+            if (!await existingblob.ExistsAsync())
+                throw new InvalidOperationException($"blob {currentlocation}/{fileName} not found");
+
+            BlobClient blobClient = newContainerClient.GetBlobClient(fileName);
+            
+            var operation = await blobClient.StartCopyFromUriAsync(currentContainerClient.GetBlobClient(fileName).Uri, new BlobCopyFromUriOptions(), ct);
+
+            await operation.WaitForCompletionAsync(ct);
+            await existingblob.DeleteAsync(cancellationToken: ct);
         }
 
         /// <summary>
@@ -145,19 +125,17 @@ namespace VPFrameworks.Storage.Azure.Blobs
         /// <returns></returns>
         public virtual async Task<ListResult<BlobDescription>> ListBlobs(string location,  CancellationToken ct)
         {
-            CloudStorageAccount storageAccount = GetCloudStorageAccount();
-            CloudBlobContainer container = GetBlobContainer(location, storageAccount);
-            BlobContinuationToken blobContinuationToken = null;
+            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(location);
 
-            List<IListBlobItem> listResult = new List<IListBlobItem>();
-            do
+            AsyncPageable<BlobItem> blobItems = containerClient.GetBlobsAsync(cancellationToken: ct);
+
+            ListResult<BlobDescription> blobDescriptions = new(); 
+            await foreach (BlobItem item in blobItems) 
             {
-                var result = await container.ListBlobsSegmentedAsync(blobContinuationToken);
-                blobContinuationToken = result.ContinuationToken;
-                listResult.AddRange(result.Results);
-            } while (blobContinuationToken != null);
+                blobDescriptions.Add(new BlobDescription(new Uri($"{containerClient.Uri.AbsoluteUri}/{item.Name}"), containerClient.Name, false));
+            }
 
-            return new ListResult<BlobDescription>(listResult.Select((listBlobItem)=> new BlobDescription(listBlobItem.Uri, listBlobItem.Container.Name, listBlobItem is CloudBlobDirectory)));
+            return blobDescriptions;
         }
          
         /// <summary>
@@ -169,10 +147,10 @@ namespace VPFrameworks.Storage.Azure.Blobs
         /// <returns></returns>
         public virtual async Task<BlobDescriptionDetails> GetBlobDetails(string location, string name, CancellationToken ct)
         {
-            CloudStorageAccount storageAccount = GetCloudStorageAccount();
-            CloudBlobContainer container = GetBlobContainer(location, storageAccount);
-            var blob = await container.GetBlobReferenceFromServerAsync(name);
-            return blob.ConvertToBlobDescriptionDetails();
+            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(location);
+            BlobClient blobClient = containerClient.GetBlobClient(name);
+
+            return await Task.FromResult(blobClient.ConvertToBlobDescriptionDetails());
 
         }
 
@@ -185,11 +163,11 @@ namespace VPFrameworks.Storage.Azure.Blobs
         /// <returns></returns>
         public virtual async Task<BlobDescriptionDetails> DeleteBlob(string location, string fileName, CancellationToken ct)
         {
-            CloudStorageAccount storageAccount = GetCloudStorageAccount();
-            CloudBlobContainer container = GetBlobContainer(location, storageAccount);
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
-            var result = await blockBlob.DeleteIfExistsAsync();
-            return blockBlob.ConvertToBlobDescriptionDetails();
+            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(location);
+            BlobClient blobClient = containerClient.GetBlobClient(fileName);
+            var details = blobClient.ConvertToBlobDescriptionDetails();
+            await blobClient.DeleteAsync(cancellationToken: ct);
+            return details;
         }
 
         /// <summary>
@@ -203,11 +181,12 @@ namespace VPFrameworks.Storage.Azure.Blobs
         public virtual async Task<BlobDescriptionDetails> Download(string location, string fileName, Stream destination, CancellationToken ct)
         {
 
-            CloudStorageAccount storageAccount = GetCloudStorageAccount();
-            CloudBlobContainer container = GetBlobContainer(location, storageAccount);
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
-            await blockBlob.DownloadToStreamAsync(destination);
-            return blockBlob.ConvertToBlobDescriptionDetails();
+            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(location);
+            BlobClient blobClient = containerClient.GetBlobClient(fileName);
+            Response<BlobDownloadInfo> downloadInfo = await blobClient.DownloadAsync();
+            await downloadInfo.Value.Content.CopyToAsync(destination);
+            
+            return blobClient.ConvertToBlobDescriptionDetails();
         }
 
         /// <summary>
@@ -221,18 +200,10 @@ namespace VPFrameworks.Storage.Azure.Blobs
         /// <returns></returns>
         public virtual async Task<BlobDescriptionDetails> Upload(Stream stream, string location, string fileName, string contentType, CancellationToken ct)
         {
-            CloudStorageAccount storageAccount = GetCloudStorageAccount();
-            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
-            CloudBlobContainer container = await GetOrCreateContainer(location, blobClient);
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(fileName);
-
-            blockBlob.Properties.ContentType = contentType;
-
-
-            await blockBlob.UploadFromStreamAsync(stream);
-
-            
-            return blockBlob.ConvertToBlobDescriptionDetails();
+            BlobContainerClient containerClient = this.blobServiceClient.GetBlobContainerClient(location);
+            BlobClient blobClient = containerClient.GetBlobClient(fileName);
+            Response<BlobContentInfo>  uploadInfo = await blobClient.UploadAsync(stream, new BlobUploadOptions() { HttpHeaders = new BlobHttpHeaders() { ContentType = contentType } }, ct);
+            return blobClient.ConvertToBlobDescriptionDetails();
         }
     }
 }

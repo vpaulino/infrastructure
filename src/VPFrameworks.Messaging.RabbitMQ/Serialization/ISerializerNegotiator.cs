@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using RabbitMQ.Client;
 
-namespace VPFrameworks.Messaging.RabbitMQ.Serialization
+namespace InfrastrutureClients.Messaging.RabbitMQ.Serialization
 {
     /// <summary>
     /// APIs that allows support for diferent types of serialization

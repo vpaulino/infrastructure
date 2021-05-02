@@ -1,7 +1,7 @@
 ﻿using System;
 using Frameworks.Cqrs.Commands;
 
-namespace VPFrameworks.Cqrs.Tests
+namespace InfrastrutureClients.Cqrs.Tests
 {
     public class MyCommand : ICommand
     {

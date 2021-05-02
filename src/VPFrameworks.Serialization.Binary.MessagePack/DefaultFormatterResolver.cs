@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace VPFrameworks.Serialization.Binary.MessagePack
+namespace InfrastrutureClients.Serialization.Binary.MessagePack
 {
     /// <summary>
     /// 

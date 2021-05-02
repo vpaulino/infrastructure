@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VPFrameworks.Messaging.Abstractions.Publisher
+namespace InfrastrutureClients.Messaging.Abstractions.Publisher
 {
     /// <summary>
     /// 

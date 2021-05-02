@@ -1,4 +1,4 @@
-﻿namespace VPFrameworks.Messaging.Abstractions.Subscriber
+﻿namespace InfrastrutureClients.Messaging.Abstractions.Subscriber
 {
     /// <summary>
     /// Contains all the data that represents the result of handling the message

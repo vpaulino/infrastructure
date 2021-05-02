@@ -1,4 +1,4 @@
-﻿namespace VPFrameworks.Messaging.Abstractions.Subscriber
+﻿namespace InfrastrutureClients.Messaging.Abstractions.Subscriber
 {
     /// <summary>
     /// If the message received is associated to a session this will be the result of that message received

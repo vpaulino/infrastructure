@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VPFrameworks.Messaging.Abstractions.Publisher
+namespace InfrastrutureClients.Messaging.Abstractions.Publisher
 {
     /// <summary>
     /// Represents the result of a publish operation

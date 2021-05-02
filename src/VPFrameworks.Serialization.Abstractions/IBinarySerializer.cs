@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace VPFrameworks.Serialization.Abstractions
+namespace InfrastrutureClients.Serialization.Abstractions
 {
     /// <summary>
     /// Contract to serializer and deserialize data from binary fromat

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace VPFrameworks.Http.Abstractions
+namespace InfrastrutureClients.Http.Abstractions
 {
     /// <summary>
     /// Creates an instance of LoggingHandler

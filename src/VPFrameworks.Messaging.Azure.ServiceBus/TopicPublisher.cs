@@ -1,14 +1,13 @@
-﻿using Microsoft.Azure.ServiceBus;
+﻿using InfrastrutureClients.Messaging.Abstractions;
+using InfrastrutureClients.Messaging.Abstractions.Publisher;
+using InfrastrutureClients.Serialization.Abstractions;
+using Microsoft.Azure.ServiceBus;
 using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using VPFrameworks.Messaging.Abstractions;
-using VPFrameworks.Messaging.Abstractions.Publisher;
-using VPFrameworks.Messaging.Azure.ServiceBus.Topics;
-using VPFrameworks.Serialization.Abstractions;
 
-namespace VPFrameworks.Messaging.Azure.ServiceBus.Topics
+namespace InfrastrutureClients.Messaging.Azure.ServiceBus.Topics
 {
     /// <summary>
     /// 

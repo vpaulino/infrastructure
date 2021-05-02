@@ -3,7 +3,7 @@ using Azure.Storage.Abstractions.Files;
 using Azure.Storage.Files;
 using Microsoft.Azure.Storage.File;
 
-namespace VPFrameworks.Storage.Azure.Files.Extensions   
+namespace InfrastrutureClients.Storage.Azure.Files.Extensions   
 {
     /// <summary>
     /// Extensions of File storage types

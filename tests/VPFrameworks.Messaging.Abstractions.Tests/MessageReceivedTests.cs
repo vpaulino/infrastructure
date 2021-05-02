@@ -2,7 +2,7 @@
 using VPFrameworks.Messaging.Abstractions.Subscriber;
 using Xunit;
 
-namespace VPFrameworks.Messaging.Abstractions.Tests
+namespace InfrastrutureClients.Messaging.Abstractions.Tests
 {
 
     public class MessageReceivedTests

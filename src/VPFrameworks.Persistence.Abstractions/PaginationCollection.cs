@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VPFrameworks.Persistence.Abstractions
+namespace InfrastrutureClients.Persistence.Abstractions
 {
     /// <summary>
     /// Instance of object that as all the data about a set of objects that represents a page of information

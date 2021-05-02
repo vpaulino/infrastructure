@@ -1,4 +1,4 @@
-﻿namespace VPFrameworks.Messaging.Abstractions.Subscriber
+﻿namespace InfrastrutureClients.Messaging.Abstractions.Subscriber
 {
     /// <summary>
     /// result of a susbscribeAsyn operations

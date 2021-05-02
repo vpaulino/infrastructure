@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VPFrameworks.Messaging.Abstractions
+namespace InfrastrutureClients.Messaging.Abstractions
 {
     /// <summary>
     /// Represents some subscription settings

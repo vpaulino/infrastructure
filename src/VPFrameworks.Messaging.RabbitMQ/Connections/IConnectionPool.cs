@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using RabbitMQ.Client;
 
-namespace VPFrameworks.Messaging.RabbitMQ.Connections
+namespace InfrastrutureClients.Messaging.RabbitMQ.Connections
 {
     /// <summary>
     /// API that provides valid connection from a pool of connections to a server

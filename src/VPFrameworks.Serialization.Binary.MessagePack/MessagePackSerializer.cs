@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using VPFrameworks.Serialization.Abstractions;
 using VPFrameworks.Serialization.Binary.MessagePack;
 
-namespace VPFrameworks.Serialization.Binary.MessagePack
+namespace InfrastrutureClients.Serialization.Binary.MessagePack
 {
     /// <summary>
     /// 

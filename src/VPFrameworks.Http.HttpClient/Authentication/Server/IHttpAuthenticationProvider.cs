@@ -1,4 +1,4 @@
-﻿namespace VPFrameworks.Http.Abstractions
+﻿namespace InfrastrutureClients.Http.Abstractions
 {
     /// <summary>
     /// Contract to get one valid Authenticator to the scheme

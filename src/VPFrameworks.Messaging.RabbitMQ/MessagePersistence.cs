@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VPFrameworks.Messaging.RabbitMQ
+namespace InfrastrutureClients.Messaging.RabbitMQ
 {
     /// <summary>
     /// Enum information if ithe message should be persisted by the broker or not

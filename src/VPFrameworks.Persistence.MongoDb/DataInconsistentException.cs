@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using VPFrameworks.Persistence.Abstractions;
 
-namespace VPFrameworks.Persistence.Repository.MongoDb
+namespace InfrastrutureClients.Persistence.Repository.MongoDb
 {
     /// <summary>
     /// this exception represents the inconsistency state of the data

@@ -13,7 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using VPFrameworks.Persistence.Abstractions;
 
-namespace VPFrameworks.Persistence.Repository.MongoDb
+namespace InfrastrutureClients.Persistence.Repository.MongoDb
 {
     /// <summary>
     /// 

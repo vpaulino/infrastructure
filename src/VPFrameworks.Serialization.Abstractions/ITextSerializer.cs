@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VPFrameworks.Serialization.Abstractions
+namespace InfrastrutureClients.Serialization.Abstractions
 {
     /// <summary>
     /// Serialize and Deserialize data from the text representation 

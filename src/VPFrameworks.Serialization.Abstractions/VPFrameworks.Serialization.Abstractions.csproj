@@ -1,12 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Authors>vitor paulino</Authors>
-    <Company>private</Company>
-    <Product>VPFrameworks</Product>
-    <Description>this contains a set of abstractions to enable serialization mechanism</Description>
-  </PropertyGroup>
+ 
 
 
   <PropertyGroup>

@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace VPFrameworks.Messaging.Abstractions.Subscriber
+namespace InfrastrutureClients.Messaging.Abstractions.Subscriber
 {
     /// <summary>
     /// After messages are received, some brokers allow explicit the Acknowledge so the message can be removed from the messaging broker 

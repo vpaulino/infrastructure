@@ -10,7 +10,7 @@ using VPFrameworks.Messaging.Abstractions.Publisher;
 using VPFrameworks.Messaging.RabbitMQ.Connections;
 using VPFrameworks.Messaging.RabbitMQ.Serialization;
 
-namespace VPFrameworks.Messaging.RabbitMQ
+namespace InfrastrutureClients.Messaging.RabbitMQ
 {
     /// <summary>
     /// Topic implementation to RAbbitMQ
